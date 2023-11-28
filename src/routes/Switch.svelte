@@ -1,4 +1,5 @@
 <script>
+	import { createEventDispatcher } from 'svelte';
 	// based on suggestions from:
 	// Inclusive Components by Heydon Pickering https://inclusive-components.design/toggle-button/
 	// On Designing and Building Toggle Switches by Sara Soueidan https://www.sarasoueidan.com/blog/toggle-switch-design/
@@ -10,66 +11,32 @@
 	export let fontSize = 16;
 	export let value = 'on';
 
-	let checked = true;
-
 	const uniqueID = Math.floor(Math.random() * 100);
 
+	const dispatch = createEventDispatcher();
 	function handleClick(event) {
-		const target = event.target;
-
-		const state = target.getAttribute('aria-checked');
-
-		checked = state === 'true' ? false : true;
-
-		value = checked === true ? 'on' : 'off';
+		dispatch('change');
 	}
-
-	const slugify = (str = '') => str.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
 </script>
 
-{#if design == 'inner'}
-	<div class="s s--inner">
-		<span id={`switch-${uniqueID}`}>{label}</span>
-		<button
-			role="switch"
-			aria-checked={checked}
-			aria-labelledby={`switch-${uniqueID}`}
-			on:click={handleClick}
-		>
-			<span>on</span>
-			<span>off</span>
-		</button>
+<div class="s s--multi">
+	<div
+		role="radiogroup"
+		class="group-container"
+		aria-labelledby={`label-${uniqueID}`}
+		style="font-size:{fontSize}px"
+		id={`group-${uniqueID}`}
+		on:click={handleClick}
+	>
+		<div class="legend" id={`label-${uniqueID}`}>{label}</div>
+		{#each options as option}
+			<input type="radio" id={`${option}-${uniqueID}`} value={option} bind:group={value} />
+			<label for={`${option}-${uniqueID}`}>
+				{option}
+			</label>
+		{/each}
 	</div>
-{:else if design == 'slider'}
-	<div class="s s--slider" style="font-size:{fontSize}px">
-		<span id={`switch-${uniqueID}`}>{label}</span>
-		<button
-			role="switch"
-			aria-checked={checked}
-			aria-labelledby={`switch-${uniqueID}`}
-			on:click={handleClick}
-		>
-		</button>
-	</div>
-{:else}
-	<div class="s s--multi">
-		<div
-			role="radiogroup"
-			class="group-container"
-			aria-labelledby={`label-${uniqueID}`}
-			style="font-size:{fontSize}px"
-			id={`group-${uniqueID}`}
-		>
-			<div class="legend" id={`label-${uniqueID}`}>{label}</div>
-			{#each options as option}
-				<input type="radio" id={`${option}-${uniqueID}`} value={option} bind:group={value} />
-				<label for={`${option}-${uniqueID}`}>
-					{option}
-				</label>
-			{/each}
-		</div>
-	</div>
-{/if}
+</div>
 
 <style>
 	:root {

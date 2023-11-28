@@ -17,6 +17,10 @@
 	/**
 	 * @type {number | undefined}
 	 */
+	let userInputFuelPrice = undefined;
+	/**
+	 * @type {number | undefined}
+	 */
 	let fuelPrice = undefined;
 	let energyPrice = 0;
 	let gasolineLitersPerKm = 0.5;
@@ -73,8 +77,9 @@
 	}
 
 	$: {
-		if (fuelPrice === undefined) {
-			fuelPrice = fuelData?.value[fuelType === 'Bensin' ? 0 : 1];
+		fuelPrice = fuelData?.value[fuelType === 'Bensin' ? 0 : 1];
+		if (userInputFuelPrice === undefined) {
+			userInputFuelPrice = fuelPrice;
 		}
 		cheapestFuel =
 			(whPerKm * energyPrice).toFixed(2) < (gasolineLitersPerKm * fuelPrice).toFixed(2)
@@ -118,6 +123,10 @@
 
 		return { breakevenPrice, difference };
 	}
+
+	function handleChange() {
+		userInputFuelPrice = fuelData?.value[fuelType === 'Bensin' ? 0 : 1];
+	}
 </script>
 
 <svelte:head>
@@ -128,9 +137,15 @@
 <section class="container">
 	<div class="card">
 		<br />
-		<Switch bind:value={fuelType} label="" design="multi" options={['Bensin', 'Diesel']} />
+		<Switch
+			on:change={handleChange}
+			bind:value={fuelType}
+			label=""
+			design="multi"
+			options={['Bensin', 'Diesel']}
+		/>
 		<p>Dagens {fuelType.toLowerCase()}pris</p>
-		<input type="number" step=".01" bind:value={fuelPrice} />
+		<input type="number" step=".01" bind:value={userInputFuelPrice} />
 
 		<p>Hvor mye bruker bensinbilen per km?</p>
 		<input type="number" step=".01" bind:value={gasolineLitersPerKm} />
