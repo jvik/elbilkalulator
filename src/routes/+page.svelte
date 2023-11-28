@@ -137,13 +137,7 @@
 <section class="container">
 	<div class="card">
 		<br />
-		<Switch
-			on:change={handleChange}
-			bind:value={fuelType}
-			label=""
-			design="multi"
-			options={['Bensin', 'Diesel']}
-		/>
+		<Switch on:change={handleChange} bind:value={fuelType} options={['Bensin', 'Diesel']} />
 		<p>Dagens {fuelType.toLowerCase()}pris</p>
 		<input type="number" step=".01" bind:value={userInputFuelPrice} />
 
