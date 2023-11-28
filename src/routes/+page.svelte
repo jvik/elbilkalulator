@@ -124,8 +124,8 @@
 		return { breakevenPrice, difference };
 	}
 
-	function handleChange() {
-		userInputFuelPrice = fuelData?.value[fuelType === 'Bensin' ? 0 : 1];
+	function handleChange(event) {
+		userInputFuelPrice = fuelData?.value[event.detail === 'Bensin' ? 0 : 1];
 	}
 </script>
 

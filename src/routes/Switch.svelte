@@ -19,7 +19,7 @@
 	 * @param {any} event
 	 */
 	function handleClick(event) {
-		dispatch('change');
+		dispatch('change', event.target.value);
 	}
 </script>
 
