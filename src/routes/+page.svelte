@@ -82,7 +82,7 @@
 			userInputFuelPrice = fuelPrice;
 		}
 		cheapestFuel =
-			(whPerKm * energyPrice).toFixed(2) < (gasolineLitersPerKm * fuelPrice).toFixed(2)
+			(whPerKm * energyPrice).toFixed(2) < (gasolineLitersPerKm * userInputFuelPrice).toFixed(2)
 				? 'Strøm'
 				: fuelType;
 		({ breakevenPrice, difference } = calculateBreakeven());
@@ -112,7 +112,7 @@
 	}
 
 	function calculateBreakeven() {
-		const costPerKmFuel = gasolineLitersPerKm * fuelPrice;
+		const costPerKmFuel = gasolineLitersPerKm * userInputFuelPrice;
 
 		if (whPerKm === 0 || costPerKmFuel === 0) {
 			return { breakevenPrice: 0, difference: 0 };
@@ -124,7 +124,7 @@
 		return { breakevenPrice, difference };
 	}
 
-	function handleChange(event) {
+	function handleFuelTypeChange(event) {
 		userInputFuelPrice = fuelData?.value[event.detail === 'Bensin' ? 0 : 1];
 	}
 </script>
@@ -137,14 +137,14 @@
 <section class="container">
 	<div class="card">
 		<br />
-		<Switch on:change={handleChange} bind:value={fuelType} options={['Bensin', 'Diesel']} />
+		<Switch on:change={handleFuelTypeChange} bind:value={fuelType} options={['Bensin', 'Diesel']} />
 		<p>Dagens {fuelType.toLowerCase()}pris</p>
 		<input type="number" step=".01" bind:value={userInputFuelPrice} />
 
-		<p>Hvor mye bruker bensinbilen per km?</p>
+		<p>Hvor mange liter bruker {fuelType.toLowerCase()}bilen per km?</p>
 		<input type="number" step=".01" bind:value={gasolineLitersPerKm} />
 		<p>
-			En kilometer vil koste {(gasolineLitersPerKm * fuelPrice).toFixed(2)} kr med {fuelType.toLowerCase()}
+			En kilometer vil koste {(gasolineLitersPerKm * userInputFuelPrice).toFixed(2)} kr med {fuelType.toLowerCase()}
 		</p>
 	</div>
 
