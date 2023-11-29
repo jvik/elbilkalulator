@@ -222,7 +222,7 @@
 
 		<p style="margin-bottom:0;">Estimert forbruk av {fuelType.toLowerCase()}bilen per km</p>
 
-		<input type="number" step=".1" min="0" bind:value={gasolineLitersPerKm} /> liter per km
+		<input type="number" step=".01" min="0" bind:value={gasolineLitersPerKm} /> liter per km
 		<p>
 			En kilometer vil koste {(gasolineLitersPerKm * (userInputFuelPrice ?? 0)).toFixed(2)} kr med {fuelType.toLowerCase()}
 		</p>
