@@ -190,12 +190,10 @@
 	 * @param {{ target: { value: any; }; }} event
 	 */
 	async function handleRegionChange(event) {
-		// Avoid that the added nettleie is added twice
-		if (nettleieEnabled) {
-			userInputEnergyPrice = +((userInputEnergyPrice ?? 0) - nettleiePrice).toFixed(2);
-		}
+		nettleieEnabled = false;
 		const selectedOptionCode = event.target.value;
 		userInputEnergyPrice = await fetchEnergyPrices(selectedOptionCode);
+		nettleieEnabled = true;
 	}
 
 	function handleNettleieChange() {
