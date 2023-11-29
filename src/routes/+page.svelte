@@ -143,7 +143,7 @@
 
 <svelte:head>
 	<title>Elbilkalkulator</title>
-	<meta name="description" content="Svelte demo app" />
+	<meta name="description" content="Elbilkalkulator" />
 </svelte:head>
 
 <section class="container">
