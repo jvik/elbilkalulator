@@ -142,6 +142,7 @@
 
 <section class="container">
 	<div class="card">
+		<h2>Fossilbil</h2>
 		<br />
 		<Switch on:change={handleFuelTypeChange} bind:value={fuelType} options={['Bensin', 'Diesel']} />
 		<p>Dagens {fuelType.toLowerCase()}pris</p>
@@ -155,6 +156,7 @@
 	</div>
 
 	<div class="card">
+		<h2>Elbil</h2>
 		<p>Velg din strømregion</p>
 		<select on:change={handleZoneChange} bind:value={selectedArea}>
 			{#each areas as area (area.code)}
@@ -172,6 +174,7 @@
 </section>
 <section class="lower-container">
 	<div class="card">
+		<h2>Sammendrag</h2>
 		<p>I dag er det billist for deg å bruke <b>{cheapestFuel.toLowerCase()}</b></p>
 
 		<p>
@@ -212,6 +215,12 @@
 		border-radius: 10px;
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 		background-color: #f5f5f5;
+	}
+
+	h2 {
+		margin-top: 5px;
+		margin-bottom: 0;
+		font-size: x-large;
 	}
 
 	select,
