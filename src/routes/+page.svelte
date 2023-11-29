@@ -100,7 +100,6 @@
 				? 'Strøm'
 				: fuelType;
 		difference = calculateDifference();
-		// fetchEnergyPrices(selectedArea), selectedArea;
 	}
 
 	/**
@@ -190,10 +189,20 @@
 	 * @param {{ target: { value: any; }; }} event
 	 */
 	async function handleRegionChange(event) {
-		nettleieEnabled = false;
+		// A bit of an ugly hack to avoid nettleie being added twice or removed twice
+		const wasNettleieEnabled = nettleieEnabled;
+		if (wasNettleieEnabled) {
+			nettleieEnabled = false;
+		}
+
 		const selectedOptionCode = event.target.value;
 		userInputEnergyPrice = await fetchEnergyPrices(selectedOptionCode);
-		nettleieEnabled = true;
+
+		// Continue the hack
+		if (wasNettleieEnabled) {
+			nettleieEnabled = true;
+			handleNettleieChange();
+		}
 	}
 
 	function handleNettleieChange() {
