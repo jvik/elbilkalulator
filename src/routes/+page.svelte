@@ -189,7 +189,11 @@
 	/**
 	 * @param {{ target: { value: any; }; }} event
 	 */
-	async function handleZoneChange(event) {
+	async function handleRegionChange(event) {
+		// Avoid that the added nettleie is added twice
+		if (nettleieEnabled) {
+			userInputEnergyPrice = +((userInputEnergyPrice ?? 0) - nettleiePrice).toFixed(2);
+		}
 		const selectedOptionCode = event.target.value;
 		userInputEnergyPrice = await fetchEnergyPrices(selectedOptionCode);
 	}
@@ -227,7 +231,7 @@
 	<div class="card">
 		<h2>Elbil</h2>
 		<p style="margin-bottom:0;">Velg din strømregion</p>
-		<select on:change={() => handleZoneChange} bind:value={selectedArea}>
+		<select on:change={handleRegionChange} bind:value={selectedArea}>
 			{#each areas as area (area.code)}
 				<option value={area.code}>{area.name}</option>
 			{/each}
@@ -254,12 +258,14 @@
 		<p>I dag er det billigst for deg å bruke <b>{cheapestFuel.toLowerCase()}</b></p>
 
 		<p>
-			Med denne utregningen er differansen {difference} kr mellom strøm og {fuelType.toLowerCase()}
+			Med denne utregningen er differansen {difference} kr mellom strøm og {fuelType.toLowerCase()} per
+			km
 		</p>
 
 		<p style="font-size:13px;">
 			Gjennomsnittlig strømpris for inneværende døgn hentes ut fra hvakosterstrommen.no. Gårsdagens
 			drivstoffpriser, samt gjennomsnittlig nettleie for forrige kvartal er hentet fra ssb.no.
+			Strømstøtte er ikke inkludert.
 		</p>
 		<p></p>
 	</div>
