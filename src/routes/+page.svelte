@@ -151,7 +151,7 @@
 		<p style="margin-bottom:0;">Estimert forbruk av {fuelType.toLowerCase()}bilen per km</p>
 
 		<input type="number" step=".1" min="0" bind:value={gasolineLitersPerKm} /> liter per km
-		<p style="position: absolute; bottom: 0; width: 100%;">
+		<p>
 			En kilometer vil koste {(gasolineLitersPerKm * userInputFuelPrice).toFixed(2)} kr med {fuelType.toLowerCase()}
 		</p>
 	</div>
@@ -170,9 +170,8 @@
 		<input type="number" step=".1" min="0" bind:value={userInputEnergyPrice} /> kr per kWh
 		<p style="margin-bottom:0;">Estimert strømforbruk på din elbil</p>
 
-		<input style="margin-bottom:50px;" type="number" min="0" step=".1" bind:value={whPerKm} /> Wh
-		per km
-		<p style="position: absolute; bottom: 0; width: 100%;">
+		<input type="number" min="0" step=".1" bind:value={whPerKm} /> Wh per km
+		<p>
 			En kilometer vil koste {(whPerKm * userInputEnergyPrice).toFixed(2)} kr per km med strøm
 		</p>
 	</div>
@@ -217,7 +216,6 @@
 	}
 
 	.card {
-		position: relative;
 		padding: 20px;
 		border-radius: 10px;
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
