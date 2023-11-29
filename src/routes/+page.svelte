@@ -7,6 +7,8 @@
 	 * @type {import('../types/ssb').APIResponse}}
 	 */
 	let fuelData;
+	let nettleieEnabled = false;
+	let nettleiePrice = 0;
 	/**
 	 * @type {import('../types/energyprice').EnergyPrice[]}}
 	 */
@@ -20,10 +22,19 @@
 	 * @type {number | undefined}
 	 */
 	let fuelPrice = undefined;
+	/**
+	 * @type {number | undefined}
+	 */
 	let userInputEnergyPrice = undefined;
+	/**
+	 * @type {number | undefined}
+	 */
 	let energyPrice = undefined;
 	let gasolineLitersPerKm = 0.5;
 	let whPerKm = 1.9;
+	/**
+	 * @type {string | undefined}
+	 */
 	let difference = undefined;
 	/**
 	 * @type {string}
@@ -84,7 +95,7 @@
 			userInputEnergyPrice = energyPrice;
 		}
 		cheapestFuel =
-			whPerKm * userInputEnergyPrice < gasolineLitersPerKm * userInputFuelPrice
+			whPerKm * (userInputEnergyPrice ?? 0) < gasolineLitersPerKm * userInputFuelPrice
 				? 'Strøm'
 				: fuelType;
 		difference = calculateDifference();
@@ -115,20 +126,69 @@
 		return energyPrice;
 	}
 
+	async function getNettleie() {
+		const requestData = {
+			query: [
+				{
+					code: 'ContentsCode',
+					selection: {
+						filter: 'item',
+						values: ['KraftprisUA']
+					}
+				},
+				{
+					code: 'Tid',
+					selection: {
+						filter: 'item',
+						values: ['2023K3']
+					}
+				}
+			],
+			response: {
+				format: 'json-stat2'
+			}
+		};
+		const response = await fetch('https://data.ssb.no/api/v0/no/table/09387/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(requestData)
+		});
+		nettleiePrice = +((await response.json()).value[0] / 100).toFixed(2);
+
+		console.log(nettleiePrice);
+	}
+	getNettleie();
+
 	function calculateDifference() {
 		const difference = Math.abs(
-			whPerKm * userInputEnergyPrice - gasolineLitersPerKm * userInputFuelPrice
+			whPerKm * (userInputEnergyPrice ?? 0) - gasolineLitersPerKm * (userInputFuelPrice ?? 0)
 		);
 		return difference.toFixed(2);
 	}
 
+	/**
+	 * @param {{ detail: string; }} event
+	 */
 	function handleFuelTypeChange(event) {
 		userInputFuelPrice = fuelData?.value[event.detail === 'Bensin' ? 0 : 1];
 	}
 
+	/**
+	 * @param {{ target: { value: any; }; }} event
+	 */
 	async function handleZoneChange(event) {
 		const selectedOptionCode = event.target.value;
 		userInputEnergyPrice = await fetchEnergyPrices(selectedOptionCode);
+	}
+
+	function handleNettleieChange() {
+		if (nettleieEnabled) {
+			userInputEnergyPrice = +((userInputEnergyPrice ?? 0) + nettleiePrice).toFixed(2);
+		} else {
+			userInputEnergyPrice = +((userInputEnergyPrice ?? 0) - nettleiePrice).toFixed(2);
+		}
 	}
 </script>
 
@@ -149,14 +209,14 @@
 
 		<input type="number" step=".1" min="0" bind:value={gasolineLitersPerKm} /> liter per km
 		<p>
-			En kilometer vil koste {(gasolineLitersPerKm * userInputFuelPrice).toFixed(2)} kr med {fuelType.toLowerCase()}
+			En kilometer vil koste {(gasolineLitersPerKm * (userInputFuelPrice ?? 0)).toFixed(2)} kr med {fuelType.toLowerCase()}
 		</p>
 	</div>
 
 	<div class="card">
 		<h2>Elbil</h2>
 		<p style="margin-bottom:0;">Velg din strømregion</p>
-		<select on:change={handleZoneChange} bind:value={selectedArea}>
+		<select on:change={() => handleZoneChange} bind:value={selectedArea}>
 			{#each areas as area (area.code)}
 				<option value={area.code}>{area.name}</option>
 			{/each}
@@ -169,8 +229,12 @@
 
 		<input type="number" min="0" step=".1" bind:value={whPerKm} /> Wh per km
 		<p>
-			En kilometer vil koste {(whPerKm * userInputEnergyPrice).toFixed(2)} kr per km med strøm
+			En kilometer vil koste {(whPerKm * (userInputEnergyPrice ?? 0)).toFixed(2)} kr per km med strøm
 		</p>
+		<label>
+			<input type="checkbox" bind:checked={nettleieEnabled} on:change={handleNettleieChange} />
+			Legg til nettleie ({nettleiePrice} kr per kWh)
+		</label>
 	</div>
 </section>
 <section class="lower-container">
@@ -227,7 +291,7 @@
 
 	select,
 	input {
-		width: 50%;
+		/* width: 50%; */
 		padding: 10px;
 		border-radius: 5px;
 		border: 1px solid #ddd;
