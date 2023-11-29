@@ -146,11 +146,11 @@
 		<br />
 		<Switch on:change={handleFuelTypeChange} bind:value={fuelType} options={['Bensin', 'Diesel']} />
 		<p style="margin-bottom:0;">Dagens {fuelType.toLowerCase()}pris</p>
-		<input type="number" step=".1" bind:value={userInputFuelPrice} /> kr
+		<input type="number" step=".1" min="0" bind:value={userInputFuelPrice} /> kr
 
 		<p style="margin-bottom:0;">Estimert forbruk av {fuelType.toLowerCase()}bilen per km</p>
 
-		<input type="number" step=".1" bind:value={gasolineLitersPerKm} /> liter per km
+		<input type="number" step=".1" min="0" bind:value={gasolineLitersPerKm} /> liter per km
 		<p style="position: absolute; bottom: 0; width: 100%;">
 			En kilometer vil koste {(gasolineLitersPerKm * userInputFuelPrice).toFixed(2)} kr med {fuelType.toLowerCase()}
 		</p>
@@ -167,10 +167,11 @@
 		<br />
 		<p style="margin-bottom:0;">Gjennomsnittlig pris per kWh</p>
 
-		<input type="number" step=".1" bind:value={userInputEnergyPrice} /> kr per kWh
+		<input type="number" step=".1" min="0" bind:value={userInputEnergyPrice} /> kr per kWh
 		<p style="margin-bottom:0;">Estimert strømforbruk på din elbil</p>
 
-		<input style="margin-bottom:50px;" type="number" step=".1" bind:value={whPerKm} /> Wh per km
+		<input style="margin-bottom:50px;" type="number" min="0" step=".1" bind:value={whPerKm} /> Wh
+		per km
 		<p style="position: absolute; bottom: 0; width: 100%;">
 			En kilometer vil koste {(whPerKm * userInputEnergyPrice).toFixed(2)} kr per km med strøm
 		</p>
