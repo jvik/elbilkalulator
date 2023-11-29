@@ -22,7 +22,8 @@
 	 * @type {number | undefined}
 	 */
 	let fuelPrice = undefined;
-	let energyPrice = 0;
+	let userInputEnergyPrice = undefined;
+	let energyPrice = undefined;
 	let gasolineLitersPerKm = 0.5;
 	let whPerKm = 1.9;
 	/**
@@ -81,12 +82,16 @@
 		if (userInputFuelPrice === undefined) {
 			userInputFuelPrice = fuelPrice;
 		}
+		if (userInputEnergyPrice === undefined) {
+			userInputEnergyPrice = energyPrice;
+		}
 		cheapestFuel =
-			(whPerKm * energyPrice).toFixed(2) < (gasolineLitersPerKm * userInputFuelPrice).toFixed(2)
+			(whPerKm * userInputEnergyPrice).toFixed(2) <
+			(gasolineLitersPerKm * userInputFuelPrice).toFixed(2)
 				? 'Strøm'
 				: fuelType;
 		({ breakevenPrice, difference } = calculateBreakeven());
-		fetchEnergyPrices(selectedArea), selectedArea;
+		// fetchEnergyPrices(selectedArea), selectedArea;
 	}
 
 	/**
@@ -109,6 +114,8 @@
 		elData = await response.json();
 		const total = elData.reduce((sum, item) => sum + item.NOK_per_kWh, 0);
 		energyPrice = +(total / elData.length).toFixed(2);
+
+		return energyPrice;
 	}
 
 	function calculateBreakeven() {
@@ -119,13 +126,18 @@
 		}
 
 		const breakevenPrice = costPerKmFuel / whPerKm;
-		const difference = breakevenPrice - energyPrice;
+		const difference = breakevenPrice - userInputEnergyPrice;
 
 		return { breakevenPrice, difference };
 	}
 
 	function handleFuelTypeChange(event) {
 		userInputFuelPrice = fuelData?.value[event.detail === 'Bensin' ? 0 : 1];
+	}
+
+	async function handleZoneChange(event) {
+		const selectedOptionCode = event.target.value;
+		userInputEnergyPrice = await fetchEnergyPrices(selectedOptionCode);
 	}
 </script>
 
@@ -150,29 +162,35 @@
 
 	<div class="card">
 		<p>Velg din strømregion</p>
-		<select bind:value={selectedArea}>
+		<select on:change={handleZoneChange} bind:value={selectedArea}>
 			{#each areas as area (area.code)}
 				<option value={area.code}>{area.name}</option>
 			{/each}
 		</select>
 		<br />
 
-		<input type="number" step=".01" bind:value={energyPrice} /> kr per kWh
+		<input type="number" step=".01" bind:value={userInputEnergyPrice} /> kr per kWh
 		<br />
 
 		<input type="number" step=".1" bind:value={whPerKm} /> Wh per km
-		<p>En kilometer vil koste {(whPerKm * energyPrice).toFixed(2)} kr per km med strøm</p>
+		<p>En kilometer vil koste {(whPerKm * userInputEnergyPrice).toFixed(2)} kr per km med strøm</p>
 	</div>
 </section>
 <section class="lower-container">
 	<div class="card">
-		<p>I dag er det billist for deg å bruke {cheapestFuel.toLowerCase()}</p>
+		<p>I dag er det billist for deg å bruke <b>{cheapestFuel.toLowerCase()}</b></p>
 
 		<p>
 			Forskjellen mellom strøm og {fuelType.toLowerCase()} er i dag {breakevenPrice.toFixed(2)} kr per
 			kWh.
 		</p>
 		<p>For øyeblikket er prisen {difference.toFixed(2)} kr per kilometer fra å koste det samme.</p>
+
+		<p style="font-size:13px;">
+			Gjennomsnittlig strømpris for inneværende døgn hentes ut fra hvakosterstrommen.no og
+			gårsdagens drivstoffpriser fra ssb.no. Kalkulatoren tar for tiden ikke høyde for nettleie.
+		</p>
+		<p></p>
 	</div>
 </section>
 
