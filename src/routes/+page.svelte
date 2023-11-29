@@ -26,11 +26,11 @@
 	let energyPrice = undefined;
 	let gasolineLitersPerKm = 0.5;
 	let whPerKm = 1.9;
+	let difference = undefined;
 	/**
 	 * @type {string}
 	 */
 	let cheapestFuel;
-	let { breakevenPrice, difference } = calculateBreakeven();
 
 	let selectedArea = 'NO1';
 
@@ -86,11 +86,11 @@
 			userInputEnergyPrice = energyPrice;
 		}
 		cheapestFuel =
-			(whPerKm * userInputEnergyPrice).toFixed(2) <
+			(whPerKm * userInputEnergyPrice).toFixed(2) >
 			(gasolineLitersPerKm * userInputFuelPrice).toFixed(2)
 				? 'Strøm'
 				: fuelType;
-		({ breakevenPrice, difference } = calculateBreakeven());
+		difference = calculateDifference();
 		// fetchEnergyPrices(selectedArea), selectedArea;
 	}
 
@@ -118,17 +118,11 @@
 		return energyPrice;
 	}
 
-	function calculateBreakeven() {
-		const costPerKmFuel = gasolineLitersPerKm * userInputFuelPrice;
-
-		if (whPerKm === 0 || costPerKmFuel === 0) {
-			return { breakevenPrice: 0, difference: 0 };
-		}
-
-		const breakevenPrice = costPerKmFuel / whPerKm;
-		const difference = breakevenPrice - userInputEnergyPrice;
-
-		return { breakevenPrice, difference };
+	function calculateDifference() {
+		const difference = Math.abs(
+			whPerKm * userInputEnergyPrice - gasolineLitersPerKm * userInputFuelPrice
+		);
+		return difference.toFixed(2);
 	}
 
 	function handleFuelTypeChange(event) {
@@ -151,10 +145,10 @@
 		<br />
 		<Switch on:change={handleFuelTypeChange} bind:value={fuelType} options={['Bensin', 'Diesel']} />
 		<p>Dagens {fuelType.toLowerCase()}pris</p>
-		<input type="number" step=".01" bind:value={userInputFuelPrice} />
+		<input type="number" step=".1" bind:value={userInputFuelPrice} />
 
 		<p>Hvor mange liter bruker {fuelType.toLowerCase()}bilen per km?</p>
-		<input type="number" step=".01" bind:value={gasolineLitersPerKm} />
+		<input type="number" step=".1" bind:value={gasolineLitersPerKm} />
 		<p>
 			En kilometer vil koste {(gasolineLitersPerKm * userInputFuelPrice).toFixed(2)} kr med {fuelType.toLowerCase()}
 		</p>
@@ -169,7 +163,7 @@
 		</select>
 		<br />
 
-		<input type="number" step=".01" bind:value={userInputEnergyPrice} /> kr per kWh
+		<input type="number" step=".1" bind:value={userInputEnergyPrice} /> kr per kWh
 		<br />
 
 		<input type="number" step=".1" bind:value={whPerKm} /> Wh per km
@@ -181,10 +175,8 @@
 		<p>I dag er det billist for deg å bruke <b>{cheapestFuel.toLowerCase()}</b></p>
 
 		<p>
-			Forskjellen mellom strøm og {fuelType.toLowerCase()} er i dag {breakevenPrice.toFixed(2)} kr per
-			kWh.
+			Med denne utregningen er differansen {difference} kr mellom strøm og {fuelType.toLowerCase()}
 		</p>
-		<p>For øyeblikket er prisen {difference.toFixed(2)} kr per kilometer fra å koste det samme.</p>
 
 		<p style="font-size:13px;">
 			Gjennomsnittlig strømpris for inneværende døgn hentes ut fra hvakosterstrommen.no og
@@ -198,7 +190,7 @@
 	.container {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
-		gap: 20px;
+		gap: 30px;
 		padding: 20px;
 	}
 
