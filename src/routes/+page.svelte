@@ -128,6 +128,19 @@
 	}
 
 	async function getNettleie() {
+		const now = new Date();
+		let year = now.getFullYear();
+		let quarter = Math.floor((now.getMonth() + 3) / 3);
+
+		// Adjust year and quarter for the first quarter
+		if (quarter === 1) {
+			quarter = 4;
+			year -= 1;
+		} else {
+			quarter -= 1;
+		}
+
+		const timeValue = `${year}K${quarter}`;
 		const requestData = {
 			query: [
 				{
@@ -141,7 +154,7 @@
 					code: 'Tid',
 					selection: {
 						filter: 'item',
-						values: ['2023K3']
+						values: [timeValue]
 					}
 				}
 			],
@@ -245,9 +258,8 @@
 		</p>
 
 		<p style="font-size:13px;">
-			Gjennomsnittlig strømpris for inneværende døgn hentes ut fra hvakosterstrommen.no og
-			gårsdagens drivstoffpriser fra ssb.no. Snittstrømpris som hentes inn tar ikke høyde for
-			nettleie.
+			Gjennomsnittlig strømpris for inneværende døgn hentes ut fra hvakosterstrommen.no. Gårsdagens
+			drivstoffpriser, samt gjennomsnittlig nettleie for forrige kvartal er hentet fra ssb.no.
 		</p>
 		<p></p>
 	</div>
