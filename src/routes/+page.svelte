@@ -142,7 +142,7 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
+	<title>Elbilkalkulator</title>
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
