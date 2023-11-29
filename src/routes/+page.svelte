@@ -202,6 +202,12 @@
 		padding: 20px;
 	}
 
+	@media (max-width: 768px) {
+		.container {
+			grid-template-columns: 1fr;
+		}
+	}
+
 	.lower-container {
 		display: grid;
 		grid-template-columns: repeat(1, 1fr);
