@@ -145,37 +145,41 @@
 		<h2>Fossilbil</h2>
 		<br />
 		<Switch on:change={handleFuelTypeChange} bind:value={fuelType} options={['Bensin', 'Diesel']} />
-		<p>Dagens {fuelType.toLowerCase()}pris</p>
-		<input type="number" step=".1" bind:value={userInputFuelPrice} />
+		<p style="margin-bottom:0;">Dagens {fuelType.toLowerCase()}pris</p>
+		<input type="number" step=".1" bind:value={userInputFuelPrice} /> kr
 
-		<p>Hvor mange liter bruker {fuelType.toLowerCase()}bilen per km?</p>
-		<input type="number" step=".1" bind:value={gasolineLitersPerKm} />
-		<p>
+		<p style="margin-bottom:0;">Estimert forbruk av {fuelType.toLowerCase()}bilen per km</p>
+
+		<input type="number" step=".1" bind:value={gasolineLitersPerKm} /> liter per km
+		<p style="position: absolute; bottom: 0; width: 100%;">
 			En kilometer vil koste {(gasolineLitersPerKm * userInputFuelPrice).toFixed(2)} kr med {fuelType.toLowerCase()}
 		</p>
 	</div>
 
 	<div class="card">
 		<h2>Elbil</h2>
-		<p>Velg din strømregion</p>
+		<p style="margin-bottom:0;">Velg din strømregion</p>
 		<select on:change={handleZoneChange} bind:value={selectedArea}>
 			{#each areas as area (area.code)}
 				<option value={area.code}>{area.name}</option>
 			{/each}
 		</select>
 		<br />
+		<p style="margin-bottom:0;">Gjennomsnittlig pris per kWh</p>
 
 		<input type="number" step=".1" bind:value={userInputEnergyPrice} /> kr per kWh
-		<br />
+		<p style="margin-bottom:0;">Estimert strømforbruk på din elbil</p>
 
-		<input type="number" step=".1" bind:value={whPerKm} /> Wh per km
-		<p>En kilometer vil koste {(whPerKm * userInputEnergyPrice).toFixed(2)} kr per km med strøm</p>
+		<input style="margin-bottom:50px;" type="number" step=".1" bind:value={whPerKm} /> Wh per km
+		<p style="position: absolute; bottom: 0; width: 100%;">
+			En kilometer vil koste {(whPerKm * userInputEnergyPrice).toFixed(2)} kr per km med strøm
+		</p>
 	</div>
 </section>
 <section class="lower-container">
 	<div class="card">
 		<h2>Sammendrag</h2>
-		<p>I dag er det billist for deg å bruke <b>{cheapestFuel.toLowerCase()}</b></p>
+		<p>I dag er det billigst for deg å bruke <b>{cheapestFuel.toLowerCase()}</b></p>
 
 		<p>
 			Med denne utregningen er differansen {difference} kr mellom strøm og {fuelType.toLowerCase()}
@@ -212,6 +216,7 @@
 	}
 
 	.card {
+		position: relative;
 		padding: 20px;
 		border-radius: 10px;
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
