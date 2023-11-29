@@ -1,7 +1,5 @@
 <script>
-	// import welcome from '$lib/images/svelte-welcome.webp';
-	// import welcome_fallback from '$lib/images/svelte-welcome.png';
-	import Switch from './Switch.svelte';
+	import Switch from '$lib/components/Switch.svelte';
 
 	import { onMount } from 'svelte';
 
@@ -86,8 +84,7 @@
 			userInputEnergyPrice = energyPrice;
 		}
 		cheapestFuel =
-			(whPerKm * userInputEnergyPrice).toFixed(2) >
-			(gasolineLitersPerKm * userInputFuelPrice).toFixed(2)
+			whPerKm * userInputEnergyPrice < gasolineLitersPerKm * userInputFuelPrice
 				? 'Strøm'
 				: fuelType;
 		difference = calculateDifference();
