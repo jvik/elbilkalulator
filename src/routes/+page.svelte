@@ -57,6 +57,7 @@
 	onMount(async () => {
 		await fetchFuelPrices();
 		await fetchEnergyPrices(selectedArea);
+		await getNettleie();
 	});
 
 	async function fetchFuelPrices() {
@@ -156,10 +157,7 @@
 			body: JSON.stringify(requestData)
 		});
 		nettleiePrice = +((await response.json()).value[0] / 100).toFixed(2);
-
-		console.log(nettleiePrice);
 	}
-	getNettleie();
 
 	function calculateDifference() {
 		const difference = Math.abs(
