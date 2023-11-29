@@ -1,19 +1,28 @@
 <script>
 	import './styles.css';
+	import { onMount } from 'svelte';
+
+	let loaded = false;
+
+	onMount(() => {
+		loaded = true;
+	});
 </script>
 
-<div class="app">
-	<header>
-		<h1>Elbil-kalkulator</h1>
-	</header>
-	<main>
-		<slot />
-	</main>
+{#if loaded}
+	<div class="app">
+		<header>
+			<h1>Elbil-kalkulator</h1>
+		</header>
+		<main>
+			<slot />
+		</main>
 
-	<footer>
-		<p><a href="https://jvik.no">jvik.no</a></p>
-	</footer>
-</div>
+		<footer>
+			<p><a href="https://jvik.no">jvik.no</a></p>
+		</footer>
+	</div>
+{/if}
 
 <style>
 	.app {
