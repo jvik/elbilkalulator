@@ -183,7 +183,8 @@
 
 		<p style="font-size:13px;">
 			Gjennomsnittlig strømpris for inneværende døgn hentes ut fra hvakosterstrommen.no og
-			gårsdagens drivstoffpriser fra ssb.no. Kalkulatoren tar for tiden ikke høyde for nettleie.
+			gårsdagens drivstoffpriser fra ssb.no. Snittstrømpris som hentes inn tar ikke høyde for
+			nettleie.
 		</p>
 		<p></p>
 	</div>
