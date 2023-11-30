@@ -2,6 +2,8 @@
 
 This project is a Svelte application that allows users to compare the cost of using fuel (gasoline or diesel) versus electricity for their vehicles. The application fetches real-time fuel and electricity prices from APIs and performs calculations based on user inputs such as fuel type, fuel consumption per kilometer, and energy consumption per kilometer.
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d57bfd76-8d98-499f-ba33-7c5771a323f0/deploy-status)](https://app.netlify.com/sites/celadon-custard-223aa6/deploys)
+
 ## Features
 
 - Fetches real-time fuel prices from the SSB API.
@@ -14,7 +16,7 @@ This project is a Svelte application that allows users to compare the cost of us
 
 ## Project Structure
 
-The project is divided into several Svelte components for better maintainability and readability:
+The project will be divided into several Svelte components for better maintainability and readability:
 
 - `Switch.svelte`: A reusable switch component for selecting the fuel type.
 - `FuelCard.svelte`: Handles the fuel-related inputs and calculations.
