@@ -31,7 +31,7 @@
 	 */
 	let energyPrice = undefined;
 	let gasolineLitersPerKm = 0.05;
-	let whPerKm = 1.9;
+	let whPerKm = 0.2;
 	/**
 	 * @type {string | undefined}
 	 */
@@ -41,7 +41,7 @@
 	 */
 	let cheapestFuel;
 
-	let selectedArea = 'NO1';
+	let selectedArea = 'NO3';
 
 	/**
 	 * @type {import('../types/energyareas').EnergyArea[]}}
@@ -249,7 +249,7 @@
 		<input type="number" step=".1" min="0" bind:value={userInputEnergyPrice} /> kr per kWh
 		<p style="margin-bottom:0;">Estimert strømforbruk på din elbil</p>
 
-		<input type="number" min="0" step=".1" bind:value={whPerKm} /> Wh per km
+		<input type="number" min="0" step=".1" bind:value={whPerKm} /> kWh per km
 		<p>
 			En kilometer vil koste {(whPerKm * (userInputEnergyPrice ?? 0)).toFixed(2)} kr per km med strøm
 		</p>
