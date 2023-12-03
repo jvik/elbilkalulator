@@ -30,8 +30,8 @@
 	 * @type {number | undefined}
 	 */
 	let energyPrice = undefined;
-	let gasolineLitersPerKm = 0.05;
-	let whPerKm = 0.2;
+	let gasolineLitersPerKm = 0.06;
+	let whPerKm = 0.25;
 	/**
 	 * @type {string | undefined}
 	 */
