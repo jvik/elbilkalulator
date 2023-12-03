@@ -16,7 +16,7 @@ This project is a Svelte application that allows users to compare the cost of us
 
 ## Project Structure
 
-The project will be divided into several Svelte components for better maintainability and readability:
+The project *will* be divided into several Svelte components for better maintainability and readability:
 
 - `Switch.svelte`: A reusable switch component for selecting the fuel type.
 - `FuelCard.svelte`: Handles the fuel-related inputs and calculations.
@@ -27,12 +27,10 @@ The project will be divided into several Svelte components for better maintainab
 
 To run this project locally, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/username/project.git`
-2. Navigate into the project directory: `cd project`
+1. Clone the repository: `git clone https://github.com/jvik/elbilkalulator.git`
+2. Navigate into the project directory: `cd elbilkalulator`
 3. Install the dependencies: `npm install`
 4. Start the development server: `npm run dev`
-
-Open [http://localhost:5000](http://localhost:5000) to view the application in your browser.
 
 ## Contributing
 
