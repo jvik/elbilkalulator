@@ -7,8 +7,8 @@
 	 * @type {{ value: any; }}
 	 */
 	let fuelData;
-	let nettleieEnabled = false;
-	let nettleiePrice = 0;
+	let standingChargeEnabled = false;
+	let standingChargePrice = 0;
 	/**
 	 * @type {import('../types/energyprice').EnergyPrice[]}}
 	 */
@@ -195,7 +195,7 @@
 			},
 			body: JSON.stringify(requestData)
 		});
-		nettleiePrice = +((await response.json()).value[0] / 100).toFixed(2);
+		standingChargePrice = +((await response.json()).value[0] / 100).toFixed(2);
 	}
 
 	function calculateDifference() {
@@ -215,28 +215,28 @@
 	/**
 	 * @param {{ target: { value: any; }; }} event
 	 */
-	async function handleRegionChange(event) {
+	async function handleAreaChange(event) {
 		// A bit of an ugly hack to avoid nettleie being added twice or removed twice
-		const wasNettleieEnabled = nettleieEnabled;
-		if (wasNettleieEnabled) {
-			nettleieEnabled = false;
+		const wasStandingChargeEnabled = standingChargeEnabled;
+		if (wasStandingChargeEnabled) {
+			standingChargeEnabled = false;
 		}
 
 		const selectedOptionCode = event.target.value;
 		userInputEnergyPrice = await fetchEnergyPrices(selectedOptionCode);
 
 		// Continue the hack
-		if (wasNettleieEnabled) {
-			nettleieEnabled = true;
-			handleNettleieChange();
+		if (wasStandingChargeEnabled) {
+			standingChargeEnabled = true;
+			handleStandingChargeChange();
 		}
 	}
 
-	function handleNettleieChange() {
-		if (nettleieEnabled) {
-			userInputEnergyPrice = +((userInputEnergyPrice ?? 0) + nettleiePrice).toFixed(2);
+	function handleStandingChargeChange() {
+		if (standingChargeEnabled) {
+			userInputEnergyPrice = +((userInputEnergyPrice ?? 0) + standingChargePrice).toFixed(2);
 		} else {
-			userInputEnergyPrice = +((userInputEnergyPrice ?? 0) - nettleiePrice).toFixed(2);
+			userInputEnergyPrice = +((userInputEnergyPrice ?? 0) - standingChargePrice).toFixed(2);
 		}
 	}
 </script>
@@ -265,7 +265,7 @@
 	<div class="card">
 		<h2>Elbil</h2>
 		<p style="margin-bottom:0;">Velg din strømregion</p>
-		<select on:change={handleRegionChange} bind:value={selectedArea}>
+		<select on:change={handleAreaChange} bind:value={selectedArea}>
 			{#each areas as area (area.code)}
 				<option value={area.code}>{area.name}</option>
 			{/each}
@@ -281,8 +281,12 @@
 			En kilometer vil koste {(whPerKm * (userInputEnergyPrice ?? 0)).toFixed(2)} kr per km med strøm
 		</p>
 		<label>
-			<input type="checkbox" bind:checked={nettleieEnabled} on:change={handleNettleieChange} />
-			Legg til nettleie ({nettleiePrice} kr per kWh)
+			<input
+				type="checkbox"
+				bind:checked={standingChargeEnabled}
+				on:change={handleStandingChargeChange}
+			/>
+			Legg til nettleie ({standingChargePrice} kr per kWh)
 		</label>
 	</div>
 </section>
