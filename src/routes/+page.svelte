@@ -55,9 +55,9 @@
 	];
 
 	onMount(async () => {
-		// await fetchFuelPrices();
-		await fetchEnergyPrices(selectedArea);
-		await fetchStandingCharges();
+		fetchStations();
+		fetchEnergyPrices(selectedArea);
+		fetchStandingCharges();
 	});
 
 	async function fetchStations() {
@@ -111,8 +111,6 @@
 			]
 		};
 	}
-
-	fetchStations();
 
 	$: {
 		fuelPrice = fuelData?.value[fuelType === 'Bensin' ? 0 : 1];
