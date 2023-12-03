@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 
 	/**
-	 * @type {import('../types/ssb').APIResponse}}
+	 * @type {{ value: any; }}
 	 */
 	let fuelData;
 	let nettleieEnabled = false;
@@ -55,37 +55,64 @@
 	];
 
 	onMount(async () => {
-		await fetchFuelPrices();
+		// await fetchFuelPrices();
 		await fetchEnergyPrices(selectedArea);
-		await getNettleie();
+		await fetchStandingCharges();
 	});
 
-	async function fetchFuelPrices() {
-		const requestData = {
-			query: [
-				{
-					code: 'Tid',
-					selection: {
-						filter: 'item',
-						values: ['2023M10']
-					}
+	async function fetchStations() {
+		const response = await fetch(
+			'https://api.drivstoffappen.no/api/stations?stationType=0&countryCode=NO',
+			{
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-API-KEY': '24ACBFDD74F54688B46D425104009AD9FC48CEBC-A',
+					'User-Agent':
+						'Drivstoffappen/1.3.8 (com.raskebiler.drivstoff.appen; build:130; iOS 15.2.1) Alamofire/5.4.4'
 				}
-			],
-			response: {
-				format: 'json-stat2'
 			}
-		};
+		);
 
-		const response = await fetch('https://data.ssb.no/api/v0/no/table/09654/', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(requestData)
-		});
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
 
-		fuelData = await response.json();
+		const data = await response.json();
+		calculateAveragePrice(data);
+		console.log(data);
+		return data;
 	}
+
+	/**
+	 * @param {any[]} stations
+	 */
+	function calculateAveragePrice(stations) {
+		let totalSumDiesel = 0;
+		let totalCountDiesel = 0;
+		let totalSumGasoline = 0;
+		let totalCountGasoline = 0;
+
+		stations.forEach((station) => {
+			station.stationDetails.forEach((detail) => {
+				if (detail.type === 'D') {
+					totalSumDiesel += detail.price;
+					totalCountDiesel += 1;
+				} else if (detail.type === '95') {
+					totalSumGasoline += detail.price;
+					totalCountGasoline += 1;
+				}
+			});
+		});
+		fuelData = {
+			value: [
+				+(totalSumGasoline / totalCountGasoline).toFixed(2),
+				+(totalSumDiesel / totalCountDiesel).toFixed(2)
+			]
+		};
+	}
+
+	fetchStations();
 
 	$: {
 		fuelPrice = fuelData?.value[fuelType === 'Bensin' ? 0 : 1];
@@ -126,7 +153,7 @@
 		return energyPrice;
 	}
 
-	async function getNettleie() {
+	async function fetchStandingCharges() {
 		const now = new Date();
 		let year = now.getFullYear();
 		let quarter = Math.floor((now.getMonth() + 3) / 3);
@@ -269,11 +296,6 @@
 			km
 		</p>
 
-		<p style="font-size:13px;">
-			Gjennomsnittlig strømpris for inneværende døgn hentes ut fra hvakosterstrommen.no. Gårsdagens
-			drivstoffpriser, samt gjennomsnittlig nettleie for forrige kvartal er hentet fra ssb.no.
-			Strømstøtte er ikke inkludert.
-		</p>
 		<p></p>
 	</div>
 </section>
