@@ -80,7 +80,6 @@
 
 		const data = await response.json();
 		calculateAveragePrice(data);
-		console.log(data);
 		return data;
 	}
 
